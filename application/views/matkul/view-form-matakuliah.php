@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Identity</title>
+    <title>Form Input Matakuliah</title>
 
     <!-- Custom fonts for this template-->
     <link href="<?= base_url('assets/'); ?>vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -27,7 +27,7 @@
 
         <!-- Sidebar -->
         <?php
-        include "template/sidebar.php"
+        include_once(dirname(__FILE__) . '/../template/sidebar.php');
         ?>
         <!-- End of Sidebar -->
 
@@ -38,7 +38,7 @@
             <div id="content">
 
                 <!-- Topbar -->
-                <?php include "template/header.php" ?>
+                <?php include_once(dirname(__FILE__) . '/../template/header.php'); ?>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
@@ -46,7 +46,7 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Form Input Matakuliah</h1>
                     </div>
 
                     <!-- Content Row -->
@@ -54,16 +54,25 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <div class="card-title">Perkenalan Diri</div>
+                                    Input Matakuliah
                                 </div>
-                                <div class="card-body">
-                                    <label for="">Nama</label>
-                                    <input type="text" value="ILHAM TEGAR BINTANG ANANDA" readonly class="form-control">
-                                    <label for="">NIM</label>
-                                    <input type="text" value="19200236" readonly class="form-control">
-                                    <label for="">Kelas</label>
-                                    <input type="text" value="19.3C.25" readonly class="form-control">
-                                </div>
+                                <form action="<?= base_url('matakuliah/cetak'); ?>" method="POST">
+                                    <div class="card-body">
+                                        <label for="">Kode Matakuliah</label>
+                                        <input type="text" name="kode" class="form-control">
+                                        <label for="">Nama Matakuliah</label>
+                                        <input type="text" name="nama" class="form-control">
+                                        <label for="">SKS</label>
+                                        <select name="sks" id="" class="form-control">
+                                            <option value="">Pilih SKS</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                        </select>
+                                        <br />
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -77,7 +86,7 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            <?php include "template/footer.php"; ?>
+            <?php include_once(dirname(__FILE__) . '/../template/footer.php'); ?>
             <!-- End of Footer -->
 
         </div>
