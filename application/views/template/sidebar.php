@@ -19,6 +19,9 @@
         <a class="nav-link" href="<?= base_url('matakuliah'); ?>">
             <i class="fas fa-book-reader"></i>
             <span>Matakuliah</span></a>
+        <a class="nav-link" href="<?= base_url('web'); ?>">
+            <i class="far fa-newspaper"></i>
+            <span>Artikel</span></a>
     </li>
 
 
