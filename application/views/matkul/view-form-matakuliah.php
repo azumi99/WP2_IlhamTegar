@@ -58,6 +58,8 @@
                                 </div>
                                 <form action="<?= base_url('matakuliah/cetak'); ?>" method="POST">
                                     <div class="card-body">
+                                        <?= form_error('kode'); ?>
+                                        <?= form_error('nama'); ?>
                                         <label for="">Kode Matakuliah</label>
                                         <input type="text" name="kode" class="form-control">
                                         <label for="">Nama Matakuliah</label>
