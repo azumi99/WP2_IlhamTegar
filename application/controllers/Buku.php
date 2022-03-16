@@ -9,6 +9,8 @@ class Buku extends CI_Controller
         $this->load->helper('pustaka_helper');
         cek_login();
     }
+
+    //manajemen Buku
     public function index()
     {
         $data['judul'] = 'Data Buku';
@@ -47,12 +49,12 @@ class Buku extends CI_Controller
             'numeric' => 'Yang anda masukan bukan angka'
         ]);
 
-        //konfigurasi sebelum gambar diupload         
-        $config['upload_path'] = './assets/img/uploud';
+        //konfigurasi sebelum gambar diupload
+        $config['upload_path'] = 'assets/img/uploud/';
         $config['allowed_types'] = 'jpg|png|jpeg';
-        $config['max_size'] = '3000';
-        $config['max_width'] = '1024';
-        $config['max_height'] = '1000';
+        $config['max_size'] = '30000';
+        $config['max_width'] = '70000';
+        $config['max_height'] = '70000';
         $config['file_name'] = 'img' . time();
 
         $this->load->library('upload', $config);
@@ -88,18 +90,30 @@ class Buku extends CI_Controller
             redirect('buku');
         }
     }
+
+    public function hapusBuku($id)
+    {
+
+        $where = ['id' => $this->uri->segment(3)];
+        $gambar = $this->ModelBuku->bukuWhere($where)->row('image');
+        unlink('assets/img/uploud/' . $gambar);
+        $this->ModelBuku->hapusBuku($where);
+        redirect('buku');
+    }
+
     public function ubahBuku()
     {
         $data['judul'] = 'Ubah Data Buku';
         $data['user'] = $this->ModelUser->cekData(['email' => $this->session->userdata('email')])->row_array();
         $data['buku'] = $this->ModelBuku->bukuWhere(['id' => $this->uri->segment(3)])->result_array();
-
         $kategori = $this->ModelBuku->joinKategoriBuku(['buku.id' => $this->uri->segment(3)])->result_array();
         foreach ($kategori as $k) {
             $data['id'] = $k['id_kategori'];
             $data['k'] = $k['kategori'];
         }
+
         $data['kategori'] = $this->ModelBuku->getKategori()->result_array();
+
 
         $this->form_validation->set_rules('judul_buku', 'Judul Buku', 'required|min_length[3]', [
             'required' => 'Judul Buku harus diisi',
@@ -132,15 +146,15 @@ class Buku extends CI_Controller
             'numeric' => 'Yang anda masukan bukan angka'
         ]);
 
-        //konfigurasi sebelum gambar diupload         
-        $config['upload_path'] = './assets/img/upload/';
+        //konfigurasi sebelum gambar diupload
+        $config['upload_path'] = 'assets/img/uploud/';
         $config['allowed_types'] = 'jpg|png|jpeg';
         $config['max_size'] = '3000';
         $config['max_width'] = '1024';
         $config['max_height'] = '1000';
         $config['file_name'] = 'img' . time();
 
-        //memuat atau memanggil library upload         
+        //memuat atau memanggil library upload
         $this->load->library('upload', $config);
 
         if ($this->form_validation->run() == false) {
@@ -152,7 +166,7 @@ class Buku extends CI_Controller
         } else {
             if ($this->upload->do_upload('image')) {
                 $image = $this->upload->data();
-                unlink('assets/img/upload/' . $this->input->post('old_pict', TRUE));
+                unlink('assets/img/uploud/' . $this->input->post('old_pict', TRUE));
                 $gambar = $image['file_name'];
             } else {
                 $gambar = $this->input->post('old_pict', TRUE);
@@ -173,13 +187,8 @@ class Buku extends CI_Controller
             redirect('buku');
         }
     }
-    public function hapusBuku()
-    {
-        $where = ['id' => $this->uri->segment(3)];
-        $this->ModelBuku->hapusBuku($where);
-        redirect('buku');
-    }
 
+    //manajemen kategori
     public function kategori()
     {
         $data['judul'] = 'Kategori Buku';
@@ -198,15 +207,41 @@ class Buku extends CI_Controller
             $this->load->view('templates/footer');
         } else {
             $data = [
-
-                'kategori' => $this->input->post('kategori')
+                'kategori' => $this->input->post('kategori', TRUE)
             ];
 
             $this->ModelBuku->simpanKategori($data);
             redirect('buku/kategori');
         }
-        // print_r($data);
-        // die;
+    }
+
+    public function ubahKategori()
+    {
+        $data['judul'] = 'Ubah Data Kategori';
+        $data['user'] = $this->ModelUser->cekData(['email' => $this->session->userdata('email')])->row_array();
+        $data['kategori'] = $this->ModelBuku->kategoriWhere(['id' => $this->uri->segment(3)])->result_array();
+
+
+        $this->form_validation->set_rules('kategori', 'Nama Kategori', 'required|min_length[3]', [
+            'required' => 'Nama Kategori harus diisi',
+            'min_length' => 'Nama Kategori terlalu pendek'
+        ]);
+
+        if ($this->form_validation->run() == false) {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/sidebar', $data);
+            $this->load->view('templates/topbar', $data);
+            $this->load->view('buku/ubah_kategori', $data);
+            $this->load->view('templates/footer');
+        } else {
+
+            $data = [
+                'kategori' => $this->input->post('kategori', true)
+            ];
+
+            $this->ModelBuku->updateKategori(['id' => $this->input->post('id')], $data);
+            redirect('buku/kategori');
+        }
     }
 
     public function hapusKategori()
